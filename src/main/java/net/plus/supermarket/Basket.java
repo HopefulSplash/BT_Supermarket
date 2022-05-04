@@ -2,6 +2,7 @@ package net.plus.supermarket;
 
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Basket {
     private ArrayList<Item> items;
@@ -71,46 +72,38 @@ public class Basket {
 
         Map<String, Integer> quantityList = getQuantityList();
 
-
         for (Item item : removeDuplicateItem(items)) {
             itemPrice = 0F;
             itemCount = quantityList.get(item.getSKU());
 
-            if (!item.getSpecialPriceList().isEmpty()) {
-                for (Item.SpecialPrice specialPrice : item.getSpecialPriceList()) {
+            //Sort The Special Offers List To The Highest First （So The Cheapest Deal Is Reached)
+            List<Item.SpecialPrice> sortedUsers = item.getSpecialPriceList().stream()
+                    .sorted(Comparator.comparing(Item.SpecialPrice::getSpecialPriceQuantity).reversed())
+                    .collect(Collectors.toList());
 
-                    while (itemCount > 0) {
+            while (itemCount > 0) {
+                if (!item.getSpecialPriceList().isEmpty()) {
 
+                    for (Item.SpecialPrice specialPrice : sortedUsers) {
 
-                        if (itemCount - specialPrice.getSpecialPriceQuantity() > 0) {
+                        if (itemCount - maxValue >= 0 ) {
 
                             maxValue = specialPrice.getSpecialPriceQuantity();
                             itemPrice = itemPrice + specialPrice.getSpecialPrice();
-                            itemCount = itemCount -maxValue;
-
-                        }
-                        else{
+                            itemCount = itemCount - maxValue;
+                        } else {
                             itemPrice = itemPrice + item.getSKUPrice();
-                            itemCount = itemCount -1;
+                            itemCount = itemCount - 1;
                         }
-
-                        System.out.println("COUNT" + itemCount);
 
                     }
-
-
+                } else {
+                    itemPrice = itemPrice + item.getSKUPrice();
+                    itemCount = itemCount - 1;
                 }
-
-
-            } else {
-                maxValue = 0;
-                itemPrice = item.getSKUPrice();
             }
+
             System.out.println("SKU = " + item.getSKU() + "\n Quantity = " + quantityList.get(item.getSKU()) + "\n SKU Price = " + dollarFormat.format(itemPrice) + "\n Special Offer =  N/A ");
-
-
-            totalPrice = totalPrice + item.getSKUPrice();
-            totalSaved = totalPrice - totalPriceWithSpecialPrice;
         }
 
 

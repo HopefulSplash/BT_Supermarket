@@ -26,16 +26,23 @@ public class Cashier {
         myBasket.addProduct(itemB);
         myBasket.addProduct(itemB);
         myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+
 
         myBasket.addProduct(itemA);
         myBasket.addProduct(itemA);
         myBasket.addProduct(itemA);
+        myBasket.addProduct(itemA);
 
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
 
+        myBasket.addProduct(itemD);
         myBasket.addProduct(itemD);
 
         System.out.println(myBasket.basketCheckOut());

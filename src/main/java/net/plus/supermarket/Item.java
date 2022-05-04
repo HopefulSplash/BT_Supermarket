@@ -1,10 +1,7 @@
 package net.plus.supermarket;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class Item {
 
@@ -75,7 +72,6 @@ public class Item {
     @Override
     public String toString() {
         int count = 1;
-
         String itemOutput = "Item Name: " + itemSKU + " Item Price: " + dollarFormat.format(itemSKUPrice);
 
         StringBuilder sb = new StringBuilder();
@@ -95,7 +91,7 @@ public class Item {
 
 
     //Sub Class For Special Prices
-    public class SpecialPrice {
+    public class SpecialPrice implements Comparable<SpecialPrice> {
         //Could Add for different types of special offers (Weight, Brand, Etc)
 
         private Item item;
@@ -131,6 +127,14 @@ public class Item {
         @Override
         public String toString() {
             return specialPriceQuantity + " For " + dollarFormat.format(specialPrice);
+        }
+
+        @Override
+        public int compareTo(SpecialPrice u) {
+            if (specialPriceQuantity == 0 || u.getSpecialPriceQuantity() == 0) {
+                return 0;
+            }
+            return specialPriceQuantity.compareTo(u.getSpecialPriceQuantity());
         }
     }
 }
