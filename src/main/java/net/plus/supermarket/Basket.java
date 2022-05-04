@@ -62,6 +62,7 @@ public class Basket {
         Float itemPrice = 0F;
         Float totalSaved = 0F;
         int maxValue = 0;
+        int itemCount = 0;
         Float totalPriceWithSpecialPrice = 0F;
 
 
@@ -72,31 +73,41 @@ public class Basket {
 
 
         for (Item item : removeDuplicateItem(items)) {
+            itemPrice = 0F;
+            itemCount = quantityList.get(item.getSKU());
 
             if (!item.getSpecialPriceList().isEmpty()) {
                 for (Item.SpecialPrice specialPrice : item.getSpecialPriceList()) {
 
+                    while (itemCount > 0) {
 
-                    //max special offer
-                    if (specialPrice.getSpecialPriceQuantity() > maxValue && quantityList.get(item.getSKU()) % specialPrice.getSpecialPriceQuantity() == 0) {
 
-                        maxValue = specialPrice.getSpecialPriceQuantity();
-                        itemPrice = specialPrice.getSpecialPrice();
+                        if (itemCount - specialPrice.getSpecialPriceQuantity() > 0) {
+
+                            maxValue = specialPrice.getSpecialPriceQuantity();
+                            itemPrice = itemPrice + specialPrice.getSpecialPrice();
+                            itemCount = itemCount -maxValue;
+
+                        }
+                        else{
+                            itemPrice = itemPrice + item.getSKUPrice();
+                            itemCount = itemCount -1;
+                        }
+
+                        System.out.println("COUNT" + itemCount);
+
                     }
-                    else{
-                        maxValue = specialPrice.getSpecialPriceQuantity();
-                        itemPrice = item.getSKUPrice();
-                    }
+
 
                 }
-                System.out.println("SKU = "+ item.getSKU() + "\n Quantity = " + quantityList.get(item.getSKU()) + "\n SKU Price = " + dollarFormat.format(itemPrice) +  "\n Special Offer =  N/A ");
-
 
 
             } else {
                 maxValue = 0;
-                System.out.println("SKU = "+ item.getSKU() + "\n Quantity = " + quantityList.get(item.getSKU()) + "\n SKU Price = " + dollarFormat.format(itemPrice) +  "\n Special Offer =  N/A ");
+                itemPrice = item.getSKUPrice();
             }
+            System.out.println("SKU = " + item.getSKU() + "\n Quantity = " + quantityList.get(item.getSKU()) + "\n SKU Price = " + dollarFormat.format(itemPrice) + "\n Special Offer =  N/A ");
+
 
             totalPrice = totalPrice + item.getSKUPrice();
             totalSaved = totalPrice - totalPriceWithSpecialPrice;

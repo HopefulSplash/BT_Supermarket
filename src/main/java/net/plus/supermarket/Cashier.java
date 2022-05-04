@@ -34,6 +34,7 @@ public class Cashier {
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
 
         myBasket.addProduct(itemD);
 
