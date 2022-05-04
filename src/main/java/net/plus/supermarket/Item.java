@@ -9,11 +9,11 @@ import java.util.Locale;
 public class Item {
 
     // Create a new Locale
-    Locale uk = new Locale("en", "GB");
+    private Locale uk = new Locale("en", "GB");
     // Create a Currency instance for the Locale
-    Currency dollars = Currency.getInstance(uk);
+    private  Currency dollars = Currency.getInstance(uk);
     // Create a formatter given the Locale
-    NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
+    private NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
 
     //Could Use A Char (String Chosen as example as AFD)
     private String itemSKU;
@@ -75,8 +75,9 @@ public class Item {
     @Override
     public String toString() {
         int count = 1;
-        //print speical blah blah
+
         String itemOutput = "Item Name: " + itemSKU + " Item Price: " + dollarFormat.format(itemSKUPrice);
+
         StringBuilder sb = new StringBuilder();
         sb.append(itemOutput);
 
@@ -101,15 +102,15 @@ public class Item {
         //Using Float due to £5.99 (Real Prices)
         private Float specialPrice;
         //Using Int due to not being able to buy half an item (Unless Items Are Sold By Weight)
-        private Integer specialPriceQuantiy;
+        private Integer specialPriceQuantity;
 
         //Getters & Setters
         public int getSpecialPriceQuantity() {
-            return specialPriceQuantiy;
+            return specialPriceQuantity;
         }
 
         public void setSpecialPriceQuantity(Integer specialPriceQuantiy) {
-            this.specialPriceQuantiy = specialPriceQuantiy;
+            this.specialPriceQuantity = specialPriceQuantiy;
         }
 
         public Float getSpecialPrice() {
@@ -123,13 +124,13 @@ public class Item {
         //Initializer for Special Price
         public SpecialPrice(Float specialPrice, Integer specialPriceQuantity) {
             this.specialPrice = specialPrice;
-            this.specialPriceQuantiy = specialPriceQuantity;
+            this.specialPriceQuantity = specialPriceQuantity;
         }
 
         //Quick Call Method For Special Price
         @Override
         public String toString() {
-            return specialPriceQuantiy + " For " + dollarFormat.format(specialPrice);
+            return specialPriceQuantity + " For " + dollarFormat.format(specialPrice);
         }
     }
 }
