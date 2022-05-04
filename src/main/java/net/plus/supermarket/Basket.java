@@ -1,10 +1,10 @@
 package net.plus.supermarket;
-
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Basket {
+    //Items List
     private ArrayList<Item> items;
 
     // Create a new Locale
@@ -14,11 +14,12 @@ public class Basket {
     // Create a formatter given the Locale
     private NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
 
+    //Constructor
     public Basket() {
         items = new ArrayList<Item>();
     }
 
-    //Different Constructors For Different Cases
+    //Different Add Functions For Different Cases (Can Remove But Test Didn't Have It So Didn't Implement)
     public void addProduct(Item item) {
         items.add(item);
     }
@@ -35,6 +36,11 @@ public class Basket {
     public String toString() {
         return "";
         //HERERERE
+
+
+
+
+
     }
 
     //Get The Quantities
@@ -57,25 +63,25 @@ public class Basket {
         return new ArrayList<>(new LinkedHashSet<>(itemsList));
     }
 
+    //COMMENT FRM HERE
+
+
     //Print Out The Basket & Detailed Information
     public String basketCheckOut() {
-        Float totalPrice = 0F;
         Float itemPrice = 0F;
-        Float totalSaved = 0F;
         int maxValue = 0;
         int itemCount = 0;
+        
         Float totalPriceWithSpecialPrice = 0F;
-
+        Float totalPriceWithOutSpecialPrice = 0F;
 
         StringBuilder sb = new StringBuilder();
-        // sb.append("=======================================================" + "\n==================== BASKET ===========================" + "\n=======================================================\n");
+        sb.append("      ===========================" + "\n            *** BASKET ****" + "\n      ===========================");
 
         Map<String, Integer> quantityList = getQuantityList();
-
         for (Item item : removeDuplicateItem(items)) {
             itemPrice = 0F;
             itemCount = quantityList.get(item.getSKU());
-
             //Sort The Special Offers List To The Highest First （So The Cheapest Deal Is Reached)
             List<Item.SpecialPrice> sortedUsers = item.getSpecialPriceList().stream()
                     .sorted(Comparator.comparing(Item.SpecialPrice::getSpecialPriceQuantity).reversed())
@@ -83,35 +89,40 @@ public class Basket {
 
             while (itemCount > 0) {
                 if (!item.getSpecialPriceList().isEmpty()) {
-
                     for (Item.SpecialPrice specialPrice : sortedUsers) {
 
-                        if (itemCount - maxValue >= 0 ) {
-
+                        if (itemCount - maxValue >= 0) {
                             maxValue = specialPrice.getSpecialPriceQuantity();
                             itemPrice = itemPrice + specialPrice.getSpecialPrice();
                             itemCount = itemCount - maxValue;
-                        } else {
-                            itemPrice = itemPrice + item.getSKUPrice();
-                            itemCount = itemCount - 1;
+                        } else if (itemCount > 0) {
+                                itemPrice = itemPrice + item.getSKUPrice();
+                                itemCount = itemCount - 1;
                         }
-
                     }
-                } else {
+                }
+                else {
                     itemPrice = itemPrice + item.getSKUPrice();
                     itemCount = itemCount - 1;
                 }
             }
 
-            System.out.println("SKU = " + item.getSKU() + "\n Quantity = " + quantityList.get(item.getSKU()) + "\n SKU Price = " + dollarFormat.format(itemPrice) + "\n Special Offer =  N/A ");
+            totalPriceWithOutSpecialPrice = totalPriceWithOutSpecialPrice + (item.getSKUPrice() * quantityList.get(item.getSKU()));
+            totalPriceWithSpecialPrice = totalPriceWithSpecialPrice + itemPrice;
+
+            //CHANGE THIS TO SHOW WHAT WAS CHARGE
+            sb.append("\nSKU = " + item.getSKU() + "\n Quantity = " + quantityList.get(item.getSKU()) + "\n Price Per Item = " + dollarFormat.format(itemPrice) + "\n Special Offers = " + sortedUsers);
         }
 
+        sb.append("\n      ===========================" + "\n           *** Checkout ****" + "\n      ===========================");
+        sb.append("\n        Amount W/O    : " + dollarFormat.format(totalPriceWithOutSpecialPrice));
 
-        // sb.append("\n==================================================");
-        // sb.append("\n    Amount Saved  : " + totalPriceWithSpecialPrice);
-        //   sb.append("\n    Amount To Pay : " + totalSaved);
-        //   sb.append("\n==================================================");
+        if (totalPriceWithOutSpecialPrice - totalPriceWithSpecialPrice > 0) {
+            sb.append("\n        Amount Saved  : " + dollarFormat.format(totalPriceWithOutSpecialPrice - totalPriceWithSpecialPrice));
+        }
 
+        sb.append("\n        Amount To Pay : " + dollarFormat.format(totalPriceWithSpecialPrice));
+        sb.append("\n      ===========================");
         return sb.toString();
     }
 }

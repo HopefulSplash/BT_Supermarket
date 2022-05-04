@@ -22,15 +22,17 @@ public class Cashier {
         Item itemD = new Item("D", 5F);
         //System.out.println(itemD.toString());
 
+        //Make A Basket
         Basket myBasket = new Basket();
-        myBasket.addProduct(itemB);
-        myBasket.addProduct(itemB);
-        myBasket.addProduct(itemB);
-        myBasket.addProduct(itemB);
-        myBasket.addProduct(itemB);
-        myBasket.addProduct(itemB);
-        myBasket.addProduct(itemB);
 
+        //Adding Items To Basket
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
+        myBasket.addProduct(itemB);
 
         myBasket.addProduct(itemA);
         myBasket.addProduct(itemA);
