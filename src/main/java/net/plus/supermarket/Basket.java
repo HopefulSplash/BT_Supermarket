@@ -12,14 +12,7 @@ public class Basket {
     private final Locale uk = new Locale("en", "GB");
     // Create a formatter given the Locale
     private final NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
-    //Variables for price and count
-    private int itemQuantity = 0;
-    private int specialPriceQuantityNeeded = 0;
-    private Float itemPrice = 0F;
-    private Float totalPriceWithSpecialPrice = 0F;
-    private Float totalPriceWithOutSpecialPrice = 0F;
-    private Map<String, Integer> quantityList = new HashMap<>();
-    private List<Item.SpecialPrice> sortedUsers = new ArrayList<>();
+    private Map<String, Integer> quantityList;
 
 
     //Constructor
@@ -47,7 +40,7 @@ public class Basket {
         StringBuilder sb = new StringBuilder();
         quantityList = getQuantityList();
 
-        for (Item item: removeDuplicateItem(items)) {
+        for (Item item : removeDuplicateItem(items)) {
             sb.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(quantityList.get(item.getSKU())).append("\n Item Price = ").append(dollarFormat.format(item.getSKUPrice()));
             for (Item.SpecialPrice specialPrice : item.getSpecialPriceList()) {
                 sb.append("\n Special Offers = ").append(specialPrice.toString());
@@ -83,33 +76,40 @@ public class Basket {
     // fix git resp + readme
     // email off
 
-
-
-
-
     //Print Out The Basket & Detailed Information
     public String basketCheckOut() {
-                //StringBuilder For Printing
-        StringBuilder sb = new StringBuilder();
-        sb.append("      ===========================" + "\n            *** BASKET ****" + "\n      ===========================");
+        //StringBuilder For Printing
+        StringBuilder sbCheckout = new StringBuilder();
+        //Isnt used until you want to use it
+        @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
+        StringBuilder sbBasket = new StringBuilder();
+        sbBasket.append("      ===========================" + "\n            *** BASKET ****" + "\n      ===========================");
+        sbCheckout.append("\n      ===========================" + "\n           *** Checkout ****" + "\n      ===========================");
 
+
+        int specialPriceQuantityNeeded = 0;
+        Float totalPriceWithSpecialPrice = 0F;
+        Float totalPriceWithOutSpecialPrice = 0F;
         //Getting HashMap Of Quantities
         quantityList = getQuantityList();
+
         //Using The Items without duplicates
         for (Item item : removeDuplicateItem(items)) {
+
             //Resetting item price and quantity for new item
-            itemPrice = 0F;
-            itemQuantity = quantityList.get(item.getSKU());
-            //Sort The Special Offers List To The Highest First So The Cheapest Deal Is Reached
-            sortedUsers = item.getSpecialPriceList().stream().sorted(Comparator.comparing(Item.SpecialPrice::getSpecialPriceQuantity).reversed()).collect(Collectors.toList());
+            Float itemPrice = 0F;
+            //Variables for price and count
+            int itemQuantity = quantityList.get(item.getSKU());
 
             //(iteration) until every item has been processed
             while (itemQuantity > 0) {
                 //Check if item has a special price
                 if (!item.getSpecialPriceList().isEmpty()) {
+                    //Sort The Special Offers List To The Highest First So The Cheapest Deal Is Reached
+                    List<Item.SpecialPrice> sortedSpecialPrices = item.getSpecialPriceList().stream().sorted(Comparator.comparing(Item.SpecialPrice::getSpecialPriceQuantity).reversed()).collect(Collectors.toList());
                     //Process each special price
-                    for (int i = 0; i <= sortedUsers.size() - 1; i++) {
-                        Item.SpecialPrice specialPrice = sortedUsers.get(i);
+                    for (int i = 0; i <= sortedSpecialPrices.size() - 1; i++) {
+                        Item.SpecialPrice specialPrice = sortedSpecialPrices.get(i);
                         //Check if the quantity of items is more or the same as the special price quantity
                         if (itemQuantity - specialPriceQuantityNeeded >= 0) {
                             //change the quantity needed as it meets requirements
@@ -119,7 +119,7 @@ public class Basket {
                             //remove quantity from item count
                             itemQuantity = itemQuantity - specialPriceQuantityNeeded;
                             //print out the item and special offer prices
-                            sb.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(specialPriceQuantityNeeded).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n Special Offers = ").append(specialPrice);
+                            sbBasket.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(specialPriceQuantityNeeded).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n Special Offers = ").append(specialPrice);
 
                         }
                         //if it doesn't meet the requirements
@@ -127,9 +127,9 @@ public class Basket {
                             itemPrice = itemPrice + item.getSKUPrice();
                             //print out the item and special offer prices
                             if (itemQuantity > 1) {
-                                sb.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(itemQuantity).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n Special Offers = ").append(specialPrice.toString());
+                                sbBasket.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(itemQuantity).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n Special Offers = ").append(specialPrice.toString());
                             } else {
-                                sb.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(itemQuantity).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n");
+                                sbBasket.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(itemQuantity).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n");
                             }
                             itemQuantity = itemQuantity - 1;
 
@@ -144,26 +144,25 @@ public class Basket {
                 else {
                     itemPrice = itemPrice + item.getSKUPrice();
                     //print out the item and special offer prices
-                    sb.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(itemQuantity).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n");
+                    sbBasket.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(1).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n");
                     itemQuantity = itemQuantity - 1;
                 }
             }
             //add to stats for print out
             totalPriceWithOutSpecialPrice = totalPriceWithOutSpecialPrice + (item.getSKUPrice() * quantityList.get(item.getSKU()));
             totalPriceWithSpecialPrice = totalPriceWithSpecialPrice + itemPrice;
+            sbCheckout.append("\nSKU = ").append(item.getSKU()).append("\n Quantity = ").append(quantityList.get(item.getSKU())).append("\n Total Price = ").append(dollarFormat.format(itemPrice)).append("\n");
 
         }
 
-        //print out checkout details
-        sb.append("\n      ===========================" + "\n           *** Checkout ****" + "\n      ===========================");
-        sb.append("\n        Amount W/O    : ").append(dollarFormat.format(totalPriceWithOutSpecialPrice));
-
+        //Printing To Console
+        sbCheckout.append("      ===========================");
+        sbCheckout.append("\n        Amount W/O    : ").append(dollarFormat.format(totalPriceWithOutSpecialPrice));
         if (totalPriceWithOutSpecialPrice - totalPriceWithSpecialPrice > 0) {
-            sb.append("\n        Amount Saved  : ").append(dollarFormat.format(totalPriceWithOutSpecialPrice - totalPriceWithSpecialPrice));
+            sbCheckout.append("\n        Amount Saved  : ").append(dollarFormat.format(totalPriceWithOutSpecialPrice - totalPriceWithSpecialPrice));
         }
-
-        sb.append("\n        Amount To Pay : ").append(dollarFormat.format(totalPriceWithSpecialPrice));
-        sb.append("\n      ===========================");
-        return sb.toString();
+        sbCheckout.append("\n        Amount To Pay : ").append(dollarFormat.format(totalPriceWithSpecialPrice));
+        sbCheckout.append("\n      ===========================");
+        return sbCheckout.toString();
     }
 }
