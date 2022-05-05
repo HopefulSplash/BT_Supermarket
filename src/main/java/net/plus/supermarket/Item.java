@@ -6,11 +6,9 @@ import java.util.*;
 public class Item {
 
     // Create a new Locale
-    private Locale uk = new Locale("en", "GB");
-    // Create a Currency instance for the Locale
-    private  Currency dollars = Currency.getInstance(uk);
+    private final Locale uk = new Locale("en", "GB");
     // Create a formatter given the Locale
-    private NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
+    private final NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
 
     //Could Use A Char (String Chosen as example as AFD)
     private String itemSKU;
@@ -40,10 +38,6 @@ public class Item {
         return specialPriceList;
     }
 
-    public void setSpecialPriceList(List<SpecialPrice> specialPriceList) {
-        this.specialPriceList = specialPriceList;
-    }
-
     //Add to list
     public void addSpecialPriceList(Float price, Integer quantity) {
         SpecialPrice specialPrice = new SpecialPrice(price,quantity);
@@ -58,7 +52,6 @@ public class Item {
     public Item(String itemSKU, Float itemSKUPrice) {
         this.itemSKU = itemSKU;
         this.itemSKUPrice = itemSKUPrice;
-        this.specialPriceList = specialPriceList;
     }
 
     //Constructor with Special Price
@@ -81,7 +74,7 @@ public class Item {
             sb.append("\n    *** Special Offers ***");
 
             for (SpecialPrice specialPrice : specialPriceList) {
-                sb.append("\n       "+ count + ") " + specialPrice.toString());
+                sb.append("\n       ").append(count).append(") ").append(specialPrice.toString());
                 count++;
             }
         }
@@ -94,27 +87,18 @@ public class Item {
     public class SpecialPrice implements Comparable<SpecialPrice> {
         //Could Add for different types of special offers (Weight, Brand, Etc)
 
-        private Item item;
         //Using Float due to £5.99 (Real Prices)
-        private Float specialPrice;
+        private final Float specialPrice;
         //Using Int due to not being able to buy half an item (Unless Items Are Sold By Weight)
-        private Integer specialPriceQuantity;
+        private final Integer specialPriceQuantity;
 
         //Getters & Setters
         public int getSpecialPriceQuantity() {
             return specialPriceQuantity;
         }
 
-        public void setSpecialPriceQuantity(Integer specialPriceQuantiy) {
-            this.specialPriceQuantity = specialPriceQuantiy;
-        }
-
         public Float getSpecialPrice() {
             return specialPrice;
-        }
-
-        public void setSpecialPrice(Float specialPrice) {
-            this.specialPrice = specialPrice;
         }
 
         //Initializer for Special Price

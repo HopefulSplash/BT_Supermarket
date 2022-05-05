@@ -5,15 +5,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Basket {
-    //Items List
-    private final ArrayList<Item> items;
 
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
+    //Items List
+    public final ArrayList<Item> items;
     // Create a new Locale
     private final Locale uk = new Locale("en", "GB");
     // Create a formatter given the Locale
     private final NumberFormat dollarFormat = NumberFormat.getCurrencyInstance(uk);
     private Map<String, Integer> quantityList;
-
+    int specialPriceQuantityNeeded = 0;
+    Float totalPriceWithSpecialPrice = 0F;
+    Float totalPriceWithOutSpecialPrice = 0F;
 
     //Constructor
     public Basket() {
@@ -24,15 +30,10 @@ public class Basket {
     public void addProduct(Item item) {
         items.add(item);
     }
-
+    public void removeProduct(int selectedIndex) {items.remove(selectedIndex);}
     @Deprecated
     public void addProduct(String itemSKU, Float itemSKUPrice) {
         items.add(new Item(itemSKU, itemSKUPrice));
-    }
-
-    @Deprecated
-    public void addProduct(String itemSKU, Float itemSKUPrice, List<Item.SpecialPrice> itemSpecialPriceList) {
-        items.add(new Item(itemSKU, itemSKUPrice, itemSpecialPriceList));
     }
 
     //Default Print Basket (No Processing)
@@ -69,8 +70,6 @@ public class Basket {
         return new ArrayList<>(new LinkedHashSet<>(itemsList));
     }
 
-    // put code in functions
-    // try recursion approach
     // tests
     // final commit
     // fix git resp + readme
@@ -80,16 +79,15 @@ public class Basket {
     public String basketCheckOut() {
         //StringBuilder For Printing
         StringBuilder sbCheckout = new StringBuilder();
-        //Isnt used until you want to use it
+        //Isn't used until you want to use it
         @SuppressWarnings("MismatchedQueryAndUpdateOfStringBuilder")
         StringBuilder sbBasket = new StringBuilder();
         sbBasket.append("      ===========================" + "\n            *** BASKET ****" + "\n      ===========================");
         sbCheckout.append("\n      ===========================" + "\n           *** Checkout ****" + "\n      ===========================");
 
-
-        int specialPriceQuantityNeeded = 0;
-        Float totalPriceWithSpecialPrice = 0F;
-        Float totalPriceWithOutSpecialPrice = 0F;
+         specialPriceQuantityNeeded = 0;
+         totalPriceWithSpecialPrice = 0F;
+         totalPriceWithOutSpecialPrice = 0F;
         //Getting HashMap Of Quantities
         quantityList = getQuantityList();
 
@@ -134,7 +132,6 @@ public class Basket {
                             itemQuantity = itemQuantity - 1;
 
                         }
-
                         if (itemQuantity - specialPriceQuantityNeeded >= 0) {
                             i = -1;
                         }

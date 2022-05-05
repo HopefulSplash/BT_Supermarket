@@ -58,8 +58,8 @@ public class Cashier {
         //Print Out Unprocessed Basket
         //System.out.println(myBasket.toString());
 
-        //Only Works When You Call Processing Method (Dynamically Doesnt Work IE - When an item is added it doesnt check only once all have)
-        //You could just call .basketCheckout Once Each Item is added but that will be a nightmare with console print outs
+        //Only Works When You Call Processing Method (Dynamically Doesn't Work IE - When an item is added it doesn't check only once all have)
+        //You could just call .basketCheckout Once Each Item is added but that will be a nightmare with console print-outs
        System.out.println(myBasket.basketCheckOut());
 
     }
