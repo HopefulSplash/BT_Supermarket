@@ -43,11 +43,27 @@ public class Cashier {
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
         myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
+        myBasket.addProduct(itemC);
 
         myBasket.addProduct(itemD);
         myBasket.addProduct(itemD);
 
-        System.out.println(myBasket.basketCheckOut());
+        //Print Out Unprocessed Basket
+        //System.out.println(myBasket.toString());
+
+
+        //Only Works When You Call Processing Method (Dynamically Doesnt Work IE - When an item is added it doesnt check only once all have)
+        //You could just call .basketCheckout Once Each Item is added but that will be a nightmare with console print outs
+
+
+
+       System.out.println(myBasket.basketCheckOut());
 
     }
 }
